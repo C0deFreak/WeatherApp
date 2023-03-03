@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import requests
 import country_converter as coco
+import geocoder
 
 cc = coco.CountryConverter()
 
@@ -15,9 +16,14 @@ API_KEY = 'ce5069b9f8ed64bdaef8e2bfa3aca7ac'
 
 def GetInfo():
   city = search_track.get()
-  # construct the URL for the API request
   url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
 
+  g = geocoder.bing(city, key="AiVu8eZxmJe9taO2_axmK5nSEZQkqqlNBqeMaQgxLs9V84KZUpSzsAyIrknNvNZ0 ")
+  results = g.json
+  print(results['lat'], results["lng"])
+  print(results['lat']/90, results["lng"]/180)
+
+  
   # send a GET request to the API and store the response
   response = requests.get(url)
 
@@ -49,12 +55,20 @@ frame = Frame(window, width=1024, height=576)
 frame.pack()
 frame.place(anchor='center', relx=0.5, rely=0.5)
 
+mapframe = Frame(window, width=200, height=200)
+mapframe.pack()
+mapframe.place(anchor='center', relx=0.9, rely=0.85)
+
 # Create an object of tkinter ImageTk
-img = ImageTk.PhotoImage(Image.open("bg.png"))
+img = ImageTk.PhotoImage(Image.open("WeatherDEV.jpg"))
+
+Mapimg = ImageTk.PhotoImage(Image.open("mapa.jpg"))
 
 # Create a Label Widget to display the text or Image
 label = Label(frame, image=img)
 label.pack()
+Mapalabel = Label(mapframe, image=Mapimg)
+Mapalabel.pack()
 
 search_track = Entry(window)
 search_track.place(anchor='center', relx=0.5, rely=0.45, width=300)
