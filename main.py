@@ -1,16 +1,20 @@
+from tkinter import *
+from PIL import ImageTk, Image
 import requests
 import country_converter as coco
-import GUI
 
 cc = coco.CountryConverter()
+
+is_searched = False
+city = ''
+to = 'name_short'
 
 # replace with your API key
 API_KEY = 'ce5069b9f8ed64bdaef8e2bfa3aca7ac'
 
-GUI.Window()
 
-
-def GetInformation(city, to):
+def GetInfo():
+  city = search_track.get()
   # construct the URL for the API request
   url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
 
@@ -31,20 +35,31 @@ def GetInformation(city, to):
 
     # print the weather information
     print(
-      f"The weather in {city} ({country}) is {description} with a temperature of {round(temperature - 273.15, 2)} Celsius, humidity of {humidity}%, and wind speed of {wind_speed} m/s."
+      f"The weather in {city} ({country}) is {description} with a temperature of {round(temperature - 273.15, 2)} Celsius, humidity of {humidity}%, and wind speed of {round(wind_speed * 3.6, 2)} km/h."
     )
   else:
     # print an error message if the request was not successful
     print("Error retrieving weather information.")
 
 
-# replace with the name of the city you want to get weather information for
-while True:
-  to = "official"
-  official_name = input('Write the official name Y/N: ')
-  if official_name.lower() == "n":
-    to = "name_short"
-  city = input("Insert the city name: ")
-  if city == 'end':
-    break
-  GetInformation(city, to)
+# Setup the Window
+window = Tk()
+window.geometry('1024x576')
+frame = Frame(window, width=1024, height=576)
+frame.pack()
+frame.place(anchor='center', relx=0.5, rely=0.5)
+
+# Create an object of tkinter ImageTk
+img = ImageTk.PhotoImage(Image.open("bg.png"))
+
+# Create a Label Widget to display the text or Image
+label = Label(frame, image=img)
+label.pack()
+
+search_track = Entry(window)
+search_track.place(anchor='center', relx=0.5, rely=0.45, width=300)
+
+search_btn = Button(text='Search', command=GetInfo)
+search_btn.place(anchor='center', relx=0.5, rely=0.5)
+
+window.mainloop()
